@@ -1,0 +1,43 @@
+Player
+- animations
+  - idle run
+  - shoot
+  - die
+  - super attack
+- actions
+ - jump
+ - normal attack
+ - die
+ - super attack
+
+Enemy
+ - animations
+  - idle move
+  - die
+ - actions
+  - die
+  - random area spawn
+
+Bullet
+ - animations
+  -idle move
+  - die
+ - actions
+  - die
+  - selected area spwan
+
+Background
+ - actions
+  - draw at coords
+  - update image
+  - set image
+Score
+ - actions
+  - draw at coords
+  - update image
+  - set image
+Health
+ - actions
+  - draw at coords
+  - update image
+  - set image 

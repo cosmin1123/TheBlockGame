@@ -1,0 +1,28 @@
+Animation
+
+MovableObject
+ - Animation
+ - move
+ - changeAnimation
+ - drawAnimation
+
+StaticObject
+ - drawAtCoords
+ - updateImage
+
+Player
+ - shoot -> do animation
+         -> create Bullet
+ - super shoot -> do animation
+               -> create Bullet
+ - die -> do animation
+       -> stop game
+
+Enemy
+ - create
+ - die 
+
+Bullet
+ - createAt
+ - die
+
