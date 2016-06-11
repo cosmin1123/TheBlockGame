@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.robo.game.RoboGame;
 import com.robo.game.basic.LoadAssets;
 import com.robo.game.basic.MovableObject;
+import com.robo.game.screens.PlayScreen;
 
 /**
  * Created by cosmin on 11/21/2015.
@@ -53,7 +54,7 @@ public class Bullet extends MovableObject {
             mCurrentRotation += mRotation / 100;
         }
         if(remove) {
-            RoboGame.player.removeBullet(this);
+            PlayScreen.getInstance(mBatch).player.removeBullet(this);
         }
     }
 

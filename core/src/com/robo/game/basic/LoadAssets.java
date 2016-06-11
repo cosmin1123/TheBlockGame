@@ -1,8 +1,10 @@
 package com.robo.game.basic;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 /**
  * Created by cosmin on 11/20/2015.
@@ -54,5 +56,9 @@ public class LoadAssets {
 
     public static Animation getMuzzleFireAnimation() {
         return loadAnimation(new Texture("Enemies/Player/player_fire_muzzle.png"), 5, 1, 0);
+    }
+
+    public static FreeTypeFontGenerator getFontGenerator() {
+        return new FreeTypeFontGenerator(Gdx.files.internal("fonts/pdark.ttf"));
     }
 }

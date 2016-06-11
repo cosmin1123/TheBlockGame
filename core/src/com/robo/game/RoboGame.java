@@ -1,21 +1,22 @@
 package com.robo.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.robo.game.basic.LoadAssets;
 import com.robo.game.basic.MovableObject;
+import com.robo.game.basic.ScreenInstance;
 import com.robo.game.basic.StaticObject;
 import com.robo.game.extended.Bullet;
 import com.robo.game.extended.Enemy;
 import com.robo.game.extended.Player;
+import com.robo.game.screens.MainMenu;
+import com.robo.game.screens.PlayScreen;
 
 import java.util.LinkedList;
 
@@ -23,14 +24,9 @@ public class RoboGame extends ApplicationAdapter implements InputProcessor{
 	public static final float screenHeight = 640;
 	public static final float screenWidth = 960;
 	private static OrthographicCamera camera;
-    ShapeRenderer shapeRenderer;
-	SpriteBatch batch;
+    static SpriteBatch batch;
 
-	StaticObject background;
-    StaticObject ground;
-	public static Player player;
-
-    public static LinkedList<Enemy> enemyLinkedList;
+    static ScreenInstance currentScreen;
 
 	public void setCamera() {
 		camera = new OrthographicCamera();
@@ -47,18 +43,21 @@ public class RoboGame extends ApplicationAdapter implements InputProcessor{
 		setCamera();
 
 		batch = new SpriteBatch();
-        ground = new StaticObject(LoadAssets.getGround(), batch, screenWidth, screenHeight / 5);
-		background = new StaticObject(LoadAssets.getBackground(1), batch, screenWidth, screenHeight);
 
-
-        enemyLinkedList = new LinkedList<Enemy>();
-        player = new Player(0, 0, batch, 3);
-
-        Enemy.generateEnemy(batch, enemyLinkedList);
+        currentScreen = MainMenu.getInstance(batch);
+        Gdx.input.setCatchBackKey(true);
         Gdx.input.setInputProcessor(this);
-
-        shapeRenderer = new ShapeRenderer();
 	}
+
+    public static void doAction(String screen) {
+        if(screen.equals(MainMenu.START_GAME)) {
+            currentScreen = PlayScreen.getInstance(batch);
+        }
+
+        if(screen.equals(MainMenu.MAIN_MENU)) {
+            currentScreen = MainMenu.getInstance(batch);
+        }
+    }
 
     @Override
     public void resize(int width, int height) {
@@ -75,52 +74,18 @@ public class RoboGame extends ApplicationAdapter implements InputProcessor{
 
 		batch.begin();
 
-		background.drawAtCoords(0, 0);
-        float decal = (float)Math.random() * 4;
-        player.mY = decal;
-        ground.drawAtCoords(10, -screenHeight / 15 + decal);
-		player.drawAnimation();
+        currentScreen.draw();
 
-        for (int i = 0; i < enemyLinkedList.size(); i++) {
-            MovableObject movableObject = enemyLinkedList.get(i);
-            movableObject.drawAnimation();
-            if(movableObject.isDying()) {
-                continue;
-            }
-
-            if(movableObject.overlaps(player)) {
-                player.die();
-            }
-
-            for(int j = 0; j < player.getBulletList().size(); j++) {
-                Bullet bullet = player.getBulletList().get(j);
-                if(movableObject.overlaps(bullet)) {
-                    movableObject.die();
-                    bullet.die();
-                }
-            }
-
-        }
-
-		batch.end();
-
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.circle(player.getRectangle().x, player.getRectangle().y, player.getRectangle().radius);
-
-        for (int i = 0; i < enemyLinkedList.size(); i++) {
-            Circle circle = enemyLinkedList.get(i).getRectangle();
-            shapeRenderer.circle(circle.x,circle.y, circle.radius);
-        }
-        for(int j = 0; j < player.getBulletList().size(); j++) {
-            Circle circle = player.getBulletList().get(j).getRectangle();
-            shapeRenderer.circle(circle.x,circle.y, circle.radius);
-        }
-        shapeRenderer.end();
+        batch.end();
     }
 
     @Override
     public boolean keyDown(int keycode) {
+
+        if(keycode == Input.Keys.BACK) {
+            doAction(MainMenu.MAIN_MENU);
+        }
+
         return false;
     }
 
@@ -136,7 +101,7 @@ public class RoboGame extends ApplicationAdapter implements InputProcessor{
 
     @Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		player.fire(screenX, -screenY + Gdx.graphics.getHeight());
+        currentScreen.touchDown(screenX, -screenY + Gdx.graphics.getHeight(), pointer, button);
         return false;
 	}
 

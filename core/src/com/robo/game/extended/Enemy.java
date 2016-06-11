@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.robo.game.RoboGame;
 import com.robo.game.basic.LoadAssets;
 import com.robo.game.basic.MovableObject;
+import com.robo.game.screens.PlayScreen;
 
 import java.util.LinkedList;
 
@@ -48,15 +49,15 @@ public class Enemy extends MovableObject{
                 y,
                 batch,
                 1,//10 - (float)Math.random() * 9,
-                RoboGame.player.mX,
-                RoboGame.player.mY,
+                PlayScreen.getPlayer().mX,
+                PlayScreen.getPlayer().mY,
                 20 + (float) Math.random() * 40));
     }
 
 
     @Override
     public void doActionOnAnimationEnd() {
-        RoboGame.enemyLinkedList.remove(this);
-        Enemy.generateEnemy(this.mBatch, RoboGame.enemyLinkedList);
+        PlayScreen.getInstance(mBatch).enemyLinkedList.remove(this);
+        Enemy.generateEnemy(mBatch, PlayScreen.getInstance(mBatch).enemyLinkedList);
     }
 }
